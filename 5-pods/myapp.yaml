@@ -1,0 +1,45 @@
+# Kubernetes Pod Template
+# ---------------------------------------------
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: myapp
+#   labels:
+#     name: myapp
+# spec:
+#   containers:
+#   - name: myapp
+#     image: <Image>
+#     resources:
+#       limits:
+#         memory: "128Mi"
+#         cpu: "500m"
+#     ports:
+#       - containerPort: <Port>
+# ---------------------------------------------
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    app: myapp
+    type: front-end
+spec:
+  containers:
+    - name: nginx-container
+      image: nginx
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 250m
+          memory: 256Mi
+      ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+      env:
+        - name: DBCON
+          value: myconnectionstring

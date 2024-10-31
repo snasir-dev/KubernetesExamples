@@ -1,3 +1,3 @@
-# To be able to have intellisense for quickling creating different Kubernetes files, must first install Kubernetes Extension. Then press "CTRL + SPACE" and it should provide a list of options to choose from.
+# To be able to have intellisense for quickly creating different Kubernetes files, must first install Kubernetes Extension. Then press "CTRL + SPACE" and it should provide a list of options to choose from.
 # NOTE - for "CTRL + SPACE" to work, must have a blank yaml file. No comments can be added either.
 
