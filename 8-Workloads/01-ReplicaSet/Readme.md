@@ -1,4 +1,4 @@
-# L24-03
+# Kubernetes - ReplicaSet
 
 Let's now use the ReplicaSet template instead of the Pod template.
 

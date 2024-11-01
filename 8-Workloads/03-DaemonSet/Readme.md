@@ -1,10 +1,12 @@
-# L24-07
+# Kubernetes DaemonSet
 
 Let's deploy a Busybox as a DaemonSet.
 
 ## Create the Deployment
 
     kubectl apply -f daemonset.yaml
+
+    kubectl get ds
 
 ## Get the pods list
 

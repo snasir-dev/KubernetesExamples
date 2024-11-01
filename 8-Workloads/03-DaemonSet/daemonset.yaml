@@ -13,12 +13,13 @@ spec:
       labels:
         app: daemonset-example
     spec:
+      # Specify we DO NOT want to run busybox container within the Master Node / Controller Plane.
       tolerations:
-      - key: node-role.kubernetes.io/master
-        effect: NoSchedule
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
       containers:
-      - name: busybox
-        image: busybox
-        args:
-        - sleep
-        - "10000"
+        - name: busybox
+          image: busybox
+          args:
+            - sleep
+            - "10000"

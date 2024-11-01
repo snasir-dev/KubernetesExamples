@@ -1,4 +1,4 @@
-# L24-09
+# Kubernetes StatefulSet
 
 Let's now create a StafulSet.
 
@@ -18,27 +18,32 @@ Let's now create a StafulSet.
 
 Open a session in nginx-sts-2 and create a file in the folder mapped to the volume.
 
-    kubectl exec nginx-sts-2 -it -- /bin/sh
+    kubectl exec nginx-sts-2 -it -- bash
     cd var/www
-    echo Hello > hello.txt
+    echo Hello World > hello.txt
 
 ## Modify the default Web page
 
     cd /usr/share/nginx/html
+    # Replace the default nginx index.html file contents with our contents
     cat > index.html
-    Hello
+    Hello World - index.html
     Ctrl-D
     exit
 
+Now the file should just have the following text: `Hello World - index.html`
+
 ## Open a session in nginx-sts-0 and reach nginx-sts-2
 
-    kubectl exec nginx-sts-0 -it -- /bin/sh
+    kubectl exec nginx-sts-0 -it -- bash
+    # Name of Instance (Pod) + Name of Headless Service.
+    # http://{STATEFULSET_PODNAME_TO_REACH}.{NAME_OF_SERVICE}
     curl http://nginx-sts-2.nginx-headless
     exit
 
 ## Delete pod 2
 
-Delete a pod and watch as it is recreated with the same name.
+Delete a pod and watch as it is AUTOMATICALLY RECREATED with the SAME name `nginx-sts-2`.
 
     kubectl delete pod nginx-sts-2
 
@@ -46,7 +51,7 @@ Delete a pod and watch as it is recreated with the same name.
 
 Open a session in nginx-sts-2 and see if the file is still present.
 
-    kubectl exec nginx-sts-2 -it -- /bin/sh
+    kubectl exec nginx-sts-2 -it -- bash
     ls var/www
     exit
 
