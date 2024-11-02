@@ -1,0 +1,91 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job1-print-hello-world
+spec:
+  template:
+    spec:
+      containers:
+        - name: busybox
+          image: busybox
+          command: ["echo", "Printing Hello World from the Job"]
+      # Typically set to "Never", since after Task Completion, you no longer want the job to run.
+      restartPolicy: Never
+# Separator to allow multiple YAML file creations. Here creating a second job
+---
+# Creating a second job
+# This defines a Kubernetes Job that runs a container with the perl image, calculates an approximation of π to 2000 digits, and is configured with parallelism and completions settings to control the execution pattern.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job2-pi
+spec:
+  # Max Seconds to Run
+  activeDeadlineSeconds: 30
+  # How many pods should run in parallel.
+  parallelism: 3
+  # how many successful pod completions are needed to mark the job as completed
+  completions: 3
+  template:
+    spec:
+      containers:
+        - name: pi
+          image: perl
+          command: ["perl", "-Mbignum=bpi", "-wle", "print bpi(2000)"]
+      restartPolicy: Never
+---
+# Here’s a Job YAML file that runs a loop in a Bash script.
+# In this example, the container will run the loop 10 times within a single Pod. Each iteration is separated by a sleep interval of 5 seconds. Typically LOOPs and Repeated Executions in SAME POD is done at the start of container within the entrypoint command shown below.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: loop-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: loop-container
+          image: alpine
+          command: ["sh", "-c"]
+          args:
+            - |
+              for i in $(seq 1 10); do
+                # Date in format "YYYY-MM-DD HH:MM:SS"
+                echo "Running iteration $i - Hello World! - Date: $(date '+%Y-%m-%d %H:%M:%S')"
+                # Run any command here, e.g., compute or API request
+                # Sleep command by default in bash uses seconds.
+                sleep 5
+              done
+      restartPolicy: Never
+---
+# Job Example - Using a Background Process with Infinite Loop
+# If we want continuous execution in a Pod (e.g., for tasks that need to keep running indefinitely), we can run an infinite loop in our container. BE CAREFUL, CAN USE A LOT OF RESOURCES AS IT WILL RUN INDEFINITELY.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: infinite-loop-job
+spec:
+  # Specifies the number of retry attempts. Set to 0 to prevent retries. Will not automatically recreate pods if you kill a pod or it fails. Otherwise, Until the job succeeds at least once, it will keep automatically recreating the pod, even if you manually delete the pod. IDEALLY KEEP THIS FOR ALL OTHER JOBS WITHOUT INFINITE LOOPS.
+  backoffLimit: 0
+  template:
+    spec:
+      containers:
+        - name: infinite-loop-container
+          image: alpine
+          command: ["sh", "-c"]
+          args:
+            - |
+              while true; do
+                echo "Repeated task running at $(date '+%Y-%m-%d %H:%M:%S')"
+                # Run any command here
+                # Sleep for 5 seconds.
+                sleep 5
+              done
+      restartPolicy: Never
+# NOTE DELETING POD WILL NOT BE ENOUGH. If you run command
+# # kubectl delete pod <pod-name> --grace-period=0 --force
+# Kubernetes will keep AUTOMATICALLY RECREATING the infinite-loop-job pod as the job was never run to completion.
+# When the JOB runs to SUCESSFUL Completion, then it STOPS. Here it wants to complete the job 1ce. However, as it is an Infinite Loop it will never be able to complete. UNLESS YOU SET the "spec.backOffLimit:0", then it will not recreate
+
+# Setting restartPolicy: Never means that the CONTAINER inside the pod will not restart upon failure, but it does not prevent the Job controller from creating a new pod if the job fails (or runs indefinitely in this case). In other words, restartPolicy: Never stops the pod from attempting to restart the container, but it doesn’t stop the Job controller from creating a new pod.
+

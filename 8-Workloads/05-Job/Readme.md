@@ -1,4 +1,4 @@
-# L24-11
+# Kubernetes - Job
 
 Let's now use the Job template.
 
@@ -16,16 +16,20 @@ Let's now use the Job template.
 
 ## Get the pod name
 
-Get the pod's log.  Something starting with **hello-**
+Get the pod's log. Something starting with **hello-**
 
     kubectl get pods
 
 ## Get the jobs list
 
-Get the container's log.  You should see **Hello from the Job**.
+Get the container's log. You should see **Hello from the Job**.
 
     kubectl logs <podName>
 
 ## Cleanup
 
     kubectl delete -f job.yaml
+
+## Job Cheatsheet
+
+![alt text](image.png)

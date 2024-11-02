@@ -1,0 +1,63 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hello-cron
+spec:
+  # The schedule defines when the CronJob should run.
+  # The format is a five-field cron expression:
+  # ┌───────────── minute (0 - 59)
+  # │ ┌───────────── hour (0 - 23)
+  # │ │ ┌───────────── day of month (1 - 31)
+  # │ │ │ ┌───────────── month (1 - 12)
+  # │ │ │ │ ┌───────────── day of week (0 - 6) (Sunday to Saturday; 7 is also Sunday)
+  # │ │ │ │ │
+  # * * * * * means the job runs every minute
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: busybox
+              image: busybox
+              command: ["echo", "Hello from the CronJob"]
+          restartPolicy: Never
+# ---
+# # Example 2: Daily Backup CronJob
+# apiVersion: batch/v1
+# kind: CronJob
+# metadata:
+#   name: daily-backup
+# spec:
+#   # This CronJob runs every day at midnight (00:00)
+#   schedule: "0 0 * * *"
+#   jobTemplate:
+#     spec:
+#       template:
+#         spec:
+#           containers:
+#           - name: backup
+#             image: my-backup-image
+#             # This command would trigger a backup process
+#             command: ["sh", "-c", "backup-script.sh"]
+#           restartPolicy: OnFailure
+
+# ---
+# # Example 3: Weekly Cleanup CronJob
+# apiVersion: batch/v1
+# kind: CronJob
+# metadata:
+#   name: weekly-cleanup
+# spec:
+#   # This CronJob runs every Sunday at 3:00 AM
+#   schedule: "0 3 * * 0"
+#   jobTemplate:
+#     spec:
+#       template:
+#         spec:
+#           containers:
+#           - name: cleanup
+#             image: my-cleanup-image
+#             # This command could be used to clean up old resources
+#             command: ["sh", "-c", "cleanup-script.sh"]
+#           restartPolicy: OnFailure
