@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-front
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    #app: hello-v1
+    # point to the second deployment created in hello-dep-v2.yaml file.
+    app: hello-v2

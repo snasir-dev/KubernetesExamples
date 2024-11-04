@@ -1,10 +1,10 @@
-# L25-04
+# Kubernetes - Blue-Green Deployments
 
 **NOTE: If you are running this lab on a ARM64 laptop/PC, edit the YAML file and change the image name from "hello-app" to "hello-arm" keeping the tag name as is.**
 
 ## Create a V1 Deployment
 
-    kubectl create -f hello-dep-v1.yaml
+    kubectl apply -f hello-dep-v1.yaml
 
 ## Create the ClusterIP service
 
@@ -59,3 +59,7 @@ The app version will be V2.
     kubectl delete -f hello-dep-v1.yaml
     kubectl delete -f hello-dep-v2.yaml
     kubectl delete -f clusterip.yaml
+
+Or delete all files in a single line as follows:
+
+    kubectl delete -f hello-dep-v1.yaml -f hello-dep-v2.yaml -f clusterip.yaml
