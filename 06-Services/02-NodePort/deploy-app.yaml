@@ -1,25 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deploy-nginx
+  name: deploy-nginx-nodeport
   labels:
-    app: nginx
+    app: nginx-nodeport
     env: prod
 spec:
   replicas: 2
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: nginx
+      app: nginx-nodeport
       env: prod
   template:
     metadata:
       labels:
-        app: nginx
+        app: nginx-nodeport
         env: prod
     spec:
       containers:
-      - name: nginx
-        image: nginx:alpine
-        ports:
-        - containerPort: 80
+        - name: nginx
+          image: nginx:alpine
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+
+          ports:
+            - containerPort: 80

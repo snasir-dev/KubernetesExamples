@@ -1,23 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deploy-example-clusterip
+  name: deploy-nginx-loadbalancer
+  labels:
+    app: nginx
+    env: prod
 spec:
-  replicas: 3
+  replicas: 2
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: app-clusterip-example
+      app: nginx
       env: prod
   template:
     metadata:
-      # We will match these labels with a Selector.
       labels:
-        app: app-clusterip-example
+        app: nginx
         env: prod
     spec:
       containers:
-        - name: nginx-cluster-ip
+        - name: nginx-loadbalancer-ex-container
           image: nginx:alpine
           resources:
             requests:
@@ -26,6 +28,5 @@ spec:
             limits:
               cpu: 250m
               memory: 256Mi
-          imagePullPolicy: Always
           ports:
             - containerPort: 80
