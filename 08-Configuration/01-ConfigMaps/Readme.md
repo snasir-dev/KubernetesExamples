@@ -1,8 +1,8 @@
-# L28-02
+# Kubernetes - ConfigMaps
 
 ## Create the ConfigMap
 
-    kubectl apply -f cm.yaml
+    kubectl apply -f cm.yaml -f pod.yaml
 
 ## Get the ConfigMap info
 
@@ -13,20 +13,22 @@ Let's output the same information in YAML format
 
     kubectl get configmap cm-example -o YAML
 
-## Deploy the pod
-
-    kubectl apply -f pod.yaml
-
 ## Connect to the Busybox
 
-    kubectl exec mybox -it -- /bin/sh
+    kubectl exec mybox -it -- sh
 
 ## Display the CITY env variable
 
-    echo $CITY
+    # First see all the Env Variables within BusyBox Image
+    env
+    # Print out city env variable.
+    echo $DB_HOST
     exit
 
 ## Cleanup
 
-    kubectl delete -f cm.yaml
-    kubectl delete -f pod.yaml --grace-period=0 --force
+    kubectl delete -f cm.yaml -f pod.yaml --grace-period=0 --force
+
+## ConfigMap Cheatsheet
+
+![alt text](image.png)

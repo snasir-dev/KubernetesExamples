@@ -16,29 +16,34 @@ on Linux/Mac
 
 ## Create the Secrets
 
-    kubectl apply -f secrets.yaml
+    kubectl apply -f secrets.yaml -f pod.yaml
 
 ## Look at the secrets
 
     kubectl get secret
+    # Only shows the # of bytes. No characters
     kubectl describe secret secrets
-    kubectl get secret secrets -o YAML
 
-## Deploy the pod
-
-    kubectl apply -f pod.yaml
+    # MUCH MORE HELPFUL COMMAND
+    kubectl get secret app-secrets -o YAML
 
 ## Connect to the Busybox
 
-    kubectl exec mybox -it -- /bin/sh
+    kubectl exec mybox -it -- sh
 
 ## Display the USERNAME and PASSWORD env variables
 
-    echo $USERNAME
+    # list all env variables on machine. It does not encode them here
+    # It will say the decoded values of USERNAME/PASSWORD when you run cmd "env"
+    env
+    echo $USERNAME_TEST
     echo $PASSWORD
     exit
 
 ## Cleanup
 
-    kubectl delete -f secrets.yaml
-    kubectl delete -f pod.yaml --force --grace-period=0
+    kubectl delete -f secrets.yaml -f pod.yaml --force --grace-period=0
+
+## Secrets Cheatsheet
+
+![alt text](image.png)

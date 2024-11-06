@@ -5,26 +5,31 @@ metadata:
 spec:
   restartPolicy: Always
   containers:
-  - name: mybox
-    image: busybox
-    resources:
-      requests:
-        cpu: 100m
-        memory: 128Mi
-      limits:
-        cpu: 250m
-        memory: 256Mi    
-    command:
-      - sleep
-      - "3600"
-    env:
-      - name: USERNAME
-        valueFrom:
-          secretKeyRef:
-            name: secrets
-            key: username
-      - name: PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: secrets
-            key: password            
+    - name: mybox
+      image: busybox
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 250m
+          memory: 256Mi
+      # Keep container shell running for 1 hour.
+      command:
+        - sleep
+        - "3600"
+      env:
+        # Note these are linking to the "username" key in the app-secrets.yaml file
+        # and we can name them whatever key we want to call them, but we just made it uppercase here.
+        - name: USERNAME_TEST
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: username
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: password
+          # - secretRef:
+          #     name: app-secret

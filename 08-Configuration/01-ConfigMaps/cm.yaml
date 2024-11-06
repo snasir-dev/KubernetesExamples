@@ -1,8 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: cm-example
+  name: app-config
 data:
   state: Michigan
   city: Ann Arbor
-
+  # More practical Env Variables
+  DB_HOST: "db.example.com"
+  DB_PORT: "5432"
+  FEATURE_FLAG: "true"
+  OTHER_VAR: "value"
