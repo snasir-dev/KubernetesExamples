@@ -1,11 +1,22 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
+# Specify this name within the Pod for the following property "spec.volumes.persistentVolumeClaim.claimName"
 metadata:
-  name: myclaim
+  name: persistent-volume-claim-ex
 spec:
+  # Access Mode in both PV and PVC must be the same.
   accessModes:
     - ReadWriteOnce
   resources:
+    # We are requesting 6 MB out of 10 MB for the Persistent Volume we created.
+    # However, all 10 MB will be set aside from the Persistent Volume for this PVC to use.
+    # When a PVC specifies a request for 6Mi of storage, it indicates that it needs at least 6Mi, but it doesn’t limit the PV to only providing that amount.
+    # Kubernetes will still bind the entire PV (in this case, 10Mi) to the PVC, meaning the pod has access to the full 10Mi, even though only 6Mi was requested.
     requests:
-      storage: 10Mi
+      storage: 6Mi
+  # storageClassName from PersistentVolume IS PRIMARILY USED TO MATCH THE PERSISTENT VOLUME CLAIM.
   storageClassName: ssd
+  # Note - it's important to note that using selectors for PVCs is not a common practice, and it can make your storage provisioning more complex
+  # selector:
+  #   matchLabels:
+  #     type: local

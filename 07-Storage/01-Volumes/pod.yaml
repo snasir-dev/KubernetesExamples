@@ -1,26 +1,27 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: mybox
+  name: mybox-volume-pvc-ex
 spec:
   restartPolicy: Always
   containers:
-  - name: mybox
-    image: busybox
-    resources:
-      requests:
-        cpu: 100m
-        memory: 128Mi
-      limits:
-        cpu: 250m
-        memory: 256Mi    
-    command:
-      - sleep
-      - "3600"
-    volumeMounts:
-      - mountPath: "/demo/"
-        name: mypd
+    - name: mybox-container-volume-pvc
+      image: busybox
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 250m
+          memory: 256Mi
+      command:
+        - sleep
+        - "3600"
+      volumeMounts:
+        # Will create a "demo" folder inside Busy Box Container
+        - mountPath: "/demo/"
+          name: my-pod-volume
   volumes:
-    - name: mypd
+    - name: my-pod-volume
       persistentVolumeClaim:
-        claimName: myclaim
+        claimName: persistent-volume-claim-ex

@@ -1,16 +1,24 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: pv001
+  name: pv001-ex
+  # Can use label to match a PVC via a Selector. However, it's important to note that using selectors for PVCs is not a common practice, and it can make your storage provisioning more complex.
+  # Primarily match PV to PVC with "spec.storageClassName" property
   labels:
     type: local
 spec:
-  storageClassName: ssd 
+  # You can define any value for the storageClassName. However, it's recommended to use meaningful names that reflect the storage type and provisioning mechanism. For example: ["ssd", "hdd", "nfs", "cephfs"]
+  # THIS storageClassName IS PRIMARILY USED TO MATCH THE PERSISTENT VOLUME CLAIM.
+  storageClassName: ssd
   capacity:
     storage: 10Mi
   volumeMode: Filesystem
+  # Access Mode in both PV and PVC must be the same.
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
+  # NOTE THIS "hostPath" is only for Local Testing. This is not supported and
+  # will never work for multi-node cluster. Here you would specify Cloud Provider
+  # Storage options like AWSElasticBlockStore, Azure File, Azure Disk, Etc.
   hostPath:
     path: "/data/"
