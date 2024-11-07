@@ -1,0 +1,81 @@
+# TO ACCESS ON LOCALHOST - Port Forward as follows
+# kubectl port-forward pod/probe-example 8080:8080. Then just go and hit
+# following endpoints.
+# Then can run following commands
+# "curl http://localhost:8080/ready", "curl http://localhost:8080/healthz", "curl http://localhost:8080/startup"
+# Can also use the pod name instead of localhost.
+# Ex: "curl http://probe-example:8080/ready"
+apiVersion: v1
+kind: Pod
+metadata:
+  name: probe-example
+spec:
+  containers:
+    - name: test-pod-probes
+      # You can use the k8s.gcr.io/e2e-test-images/agnhost:2.45 image, which is provided by Kubernetes for testing purposes. This image includes several useful endpoints, such as /healthz and /ready, that you can use to test the probes without having to create your own image.
+      image: k8s.gcr.io/e2e-test-images/agnhost:2.45
+      args: ["netexec", "--http-port=8080"] # Starts an HTTP server on port 8080
+      ports:
+        - containerPort: 8080
+
+      # Resource limits for the container
+      resources:
+        limits:
+          memory: "256Mi"
+          cpu: "500m"
+        requests:
+          memory: "128Mi"
+          cpu: "250m"
+
+      # Startup Probe - Checks if the container has started up correctly
+      # If this probe fails 5 times in a row, Kubernetes will assume the container failed to start and will restart it.
+      # Startup probes disable other probes (liveness and readiness) until they succeed.
+      startupProbe:
+        httpGet:
+          path: /startup # Endpoint to check if the container has started up
+          port: 8080
+        initialDelaySeconds: 5 # Time to wait before starting the first startup check
+        periodSeconds: 10 # Interval between checks
+        failureThreshold: 5 # After 5 consecutive failures, restart the container
+
+      # Readiness Probe - Checks if the container is ready to serve requests
+      # If this probe fails 3 times in a row, the Pod will be removed from the service's endpoints.
+      readinessProbe:
+        httpGet:
+          path: /ready # Endpoint to check if the container is ready
+          port: 8080
+        initialDelaySeconds: 5 # Time to wait before starting the first readiness check
+        periodSeconds: 5 # Interval between checks
+        successThreshold: 1 # Number of successful checks to consider the container ready
+        failureThreshold: 3 # After 3 consecutive failures, mark the container as "NotReady"
+        # Readiness Probe - Uses tcpSocket action to check if port 8080 is open
+      # If this probe fails 3 times in a row, the Pod will be removed from the Service’s endpoints.
+      # readinessProbe:
+      #   tcpSocket:
+      #     port: 8080               # Check if port 8080 is open
+      #   initialDelaySeconds: 5     # Wait before starting readiness checks
+      #   periodSeconds: 5           # Check every 5 seconds
+      #   successThreshold: 1        # After 1 successful check, mark the Pod as ready
+      #   failureThreshold: 3        # After 3 consecutive failures, mark the container as "NotReady"
+
+      # Liveness Probe - Checks if the container is running correctly
+      # If this probe fails 3 times in a row, Kubernetes will restart the container.
+      livenessProbe:
+        httpGet:
+          path: /healthz # Endpoint to check container health
+          port: 8080 # Port on which to perform the check
+        initialDelaySeconds: 10 # Time to wait before starting the first check
+        periodSeconds: 5 # Interval between checks
+        failureThreshold: 3 # After 3 consecutive failures, restart the container
+
+
+        # Probe Action - Exec
+        # exec:
+        ## Print "Checking liveness" and check if the 'netexec' process is running; if not found, the probe will fail. Remember that netexec was a container args we provided.
+        #   command:
+        #     - /bin/sh
+        #     - -c
+        #     - "echo 'Checking liveness' && ps aux | grep 'netexec'"
+        # initialDelaySeconds: 10    # Wait before starting liveness checks
+        # periodSeconds: 5           # Check every 5 seconds
+        # failureThreshold: 3        # After 3 consecutive failures, restart the container
