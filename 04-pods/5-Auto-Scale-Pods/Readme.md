@@ -4,9 +4,9 @@ Let's use the Horizontal Pod Autoscaler to scale a pod.
 
 ## Metrics Server
 
-Is the Metrics Server installed in your cluster? Look for a pod called **metrics-server** in the kube-system namespace
+Is the Metrics Server installed in your cluster? Look for a pod/deployment called **metrics-server** in the kube-system namespace
 
-    kubectl get po -n kube-system
+    kubectl get all -n kube-system | grep "metrics-server"
 
 If not, install the Metrics Server
 
@@ -40,13 +40,13 @@ Validate
 
 ## Connect to the BusyBox container
 
-    kubectl exec mybox -it -- /bin/sh
+    kubectl exec mybox -it -- sh
 
 ## Increase load
 
 Type this endless loop:
 
-    while true; do wget -q -O- http://php-apache; done
+    while true; do wget -q -O- http://horizontal-pod-scaler-service; done
 
 Validate
 

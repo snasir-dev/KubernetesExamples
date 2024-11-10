@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Must provide same name within HorizontalPodAutoScaler.spec.scaleTargetRef.name
+  name: horizontal-pod-scaler-deployment
+spec:
+  selector:
+    matchLabels:
+      run: horizontal-pod-scaler-example
+  replicas: 1
+  # Pod Template
+  template:
+    metadata:
+      labels:
+        run: horizontal-pod-scaler-example
+    spec:
+      containers:
+        - name: horizontal-pod-scaler-container
+          image: guybarrette/hpa-example
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 200m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: horizontal-pod-autoscaler-ex
+  # "default" here is actual name of the namespace.
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    # Name must match the deployment from deployment manifest above.
+    name: horizontal-pod-scaler-deployment
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          # This will trigger the additional creation of new pods. If say initially pod 1 reaches 50% CPU utilization OF Request CPU limit specified in the deployment ()200m, it will go ahead and create Pod 2. Maximum pods created specified by spec.maxReplicas above.
+          # NOTE - SCALING UP IS IMMEDIATE. If Horizontal Pod Auto scaler detects metrics are above threadhold, will try to scale up pods immediately.
+          # SCALING DOWN - K8S WAITS 5 MINUTES AND CHECKS FOR CONSISTENT LOW METRICS BEFORE SCALING DOWN TO ENSURE IT DOESN'T REPEATEDLY SCALE UP/DOWN.
+          averageUtilization: 50
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  # This service will allow us to set a static domain name for our deployment pod. Now we can access it with whatever name we provide here, so we can do "http://horizontal-pod-scaler-service" instead of just accessing via the pod IP Address taht is ephemeral.
+  name: horizontal-pod-scaler-service
+  labels:
+    run: horizontal-pod-scaler-example
+spec:
+  ports:
+    - port: 80
+  selector:
+    run: horizontal-pod-scaler-example
