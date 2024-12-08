@@ -1,0 +1,6 @@
+# Ignore Environment files in any directory. This pattern will match .env, .env.local, and any other .env variations (e.g., .env.development.local, .env.test.local).
+**/.env*
+
+# Editor directories and files
+# Ignore all VSCode settings at any level
+**/.vscode/ 
