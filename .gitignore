@@ -1,6 +1,68 @@
+# .gitignore Syntax Guide
+# - `/pattern`     : Ignore files or directories in the root directory only.
+# - `**/pattern`   : Ignore files or directories at any level.
+# - `pattern/`     : Ignore directories matching "pattern" at any level.
+# - `!pattern`     : Negate a pattern; include files or directories that were excluded by other patterns.
+# - `*`            : Match any sequence of characters (excluding "/").
+# - `?`            : Match any single character (excluding "/").
+# - `**/`          : Match directories or files across any number of subdirectories.
+
+# ==============
+# Example patterns:
+# `/file.txt`     : Ignore `file.txt` in the root directory only.
+# `**/file.txt`   : Ignore `file.txt` at any level of the directory structure.
+# `folder/`       : Ignore all folders named "folder" at any level.
+# `!important.md` : Exclude `important.md` from ignore (even if matching other rules).
+
 # Ignore Environment files in any directory. This pattern will match .env, .env.local, and any other .env variations (e.g., .env.development.local, .env.test.local).
 **/.env*
 
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# "**/" will Ignore file/folder in any directory
+# Ignore REACT dependency folder.
+**/node_modules
+**/dist
+**/dist-ssr
+**/*.local
+
+#Ignore .NET dependency folder in any directory.
+**/bin/
+**/obj/
+
 # Editor directories and files
-# Ignore all VSCode settings at any level
-**/.vscode/ 
+**/.vscode/               # Ignore all VSCode settings at any level
+!**/.vscode/extensions.json  # Keep VSCode extensions.json if it exists at any level
+**/.idea/                 # Ignore JetBrains IDE settings at any level
+**/.DS_Store              # Ignore macOS DS_Store files at any level
+**/*.suo                  # Ignore Visual Studio user settings at any level
+**/.ntvs                  # Ignore Node.js tools for VS files at any level
+**/*.njsproj              # Ignore Node.js project files in VS at any level
+**/*.sln                  # Ignore Visual Studio Solution files at any level
+**/*.sw?                  # Ignore Vim swap files at any level
+
+# Build outputs
+**/*.dll                  # Ignore .NET assemblies at any level
+**/*.exe                  # Ignore .NET executables at any level
+**/*.out                  # Ignore compiled output files at any level
+
+# Application personal notes
+**/Personal_Notes.md      # Ignore Personal_Notes.md at any level
+
+# Temporary files
+**/*.tmp                  # Ignore temporary files at any level
+**/*.bak                  # Ignore backup files at any level
+**/*.old                  # Ignore old versions of files at any level
+
+#Avoid personal note files across entire application
+#  "*/Personal_Notes.md" Matches Personal_Notes.md files located exactly one directory deep.
+#  "**/Personal_Notes.md" Matches Personal_Notes.md files located at any level of the directory structure.
+# "**" This pattern will match Personal_Notes.md files at any level in the directory tree, including the root directory.
+**/Personal_Notes.md
