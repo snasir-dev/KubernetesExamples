@@ -38,7 +38,7 @@ Before diving into the examples, ensure you have the following installed and con
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/snasir95/KubernetesExamples.git
+   git clone https://github.com/snasir-dev/KubernetesExamples.git
    ```
 2. Navigate to the desired example directory:
    ```bash

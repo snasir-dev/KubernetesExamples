@@ -28,7 +28,7 @@ spec:
         # pathNotes: ""
     spec:
       containers:
-        # FUNDEMENTAL IDEA IS THAT IMAGE VERSIONS WILL KEEP GETTING UPDATED, i.e you are updating your code and that new image that will be used will then be deployed. Previous Versions will be recorded and a history of it will be there. For each different update, can add a label of a version to differentiate what deployment version it is.
+        # FUNDAMENTAL IDEA IS THAT IMAGE VERSIONS WILL KEEP GETTING UPDATED, i.e you are updating your code and that new image that will be used will then be deployed. Previous Versions will be recorded and a history of it will be there. For each different update, can add a label of a version to differentiate what deployment version it is.
         # You then just apply this same deployment again, kubectl apply -f hello-deployment.yaml.
         # It will then roll out the update and you will then have an additional version of the deployment
         # You can check with "kubectl describe deploy hello-dep" as well as check a new ReplicaSet being created "kubectl get rs". To move between different versions use "k rollout undo deployment hello-dep --to-revision 2". Can find revision number from "kubectl rollout history deployment hello-dep"
